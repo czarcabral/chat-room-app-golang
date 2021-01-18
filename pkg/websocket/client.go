@@ -40,6 +40,7 @@ func (c *Client) Read() {
 		}
 
 		// create Message object out of messageType and data
+		// note: add sender's id to message
 		message := Message{Type: messageType, Body: string(p), FromClientId: c.ID}
 		c.Pool.Broadcast <- message
 		fmt.Printf("Message Received: %+v\n", message)
