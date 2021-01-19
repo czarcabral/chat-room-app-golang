@@ -10,7 +10,7 @@ import (
 var upgrader = websocket.Upgrader {
 	ReadBufferSize: 1024,
 	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool { return true },
+	CheckOrigin: func(r *http.Request) bool { return true }, // I believe this has to do with cross-origin stuff
 }
 
 // upgrade http protocol to websocket protocol

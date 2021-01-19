@@ -3,24 +3,7 @@ package websocket
 import (
 	"fmt"
 	"log"
-	// "sync"
-	"github.com/gorilla/websocket"
 )
-
-// Each client is a websocket connection with an Id and access to shared pool
-type Client struct {
-	ID 		int
-	Conn 	*websocket.Conn
-	Pool 	*Pool
-}
-
-// Each request/response exists in this form
-type Message struct {
-	Type int `json:"type"`
-	Body string `json:"body"`
-	FromClientId int `json:"fromClientId"` // if fromClientId == 0, it means that the message is a system message like Register/Unregister
-	NewClientId int `json:"newClientId"` // this will hold the new client's id to be sent once they register, but will be 0 for every other message
-}
 
 // Client struct method: infinitely loops to wait to receive messages
 func (c *Client) Read() {
@@ -33,16 +16,26 @@ func (c *Client) Read() {
 
 	for {
 		// blocks here until message arrives, then reads message and returns messageType and data
-		messageType, p, err := c.Conn.ReadMessage()
+		_, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		// create Message object out of messageType and data
+		// create HttpMessage object out of messageType and data
 		// note: add sender's id to message
-		message := Message{Type: messageType, Body: string(p), FromClientId: c.ID}
-		c.Pool.Broadcast <- message
-		fmt.Printf("Message Received: %+v\n", message)
+		body := ChatMessage{
+			Username: c.Username,
+			Message: string(p),
+		}
+		httpMessage := HttpMessage{
+			Body: body,
+		}
+		broadcastChannelValue := BroadcastChannelValue{
+			HttpMessage: httpMessage,
+			CurrentClient: *c,
+		}
+		c.Pool.Broadcast <- broadcastChannelValue
+		fmt.Printf("HttpMessage Received: %+v\n", httpMessage)
 	}
 }

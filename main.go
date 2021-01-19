@@ -8,7 +8,7 @@ import (
 
 // note: a ResponseWriter is an http response. When we write to it, we are sending response to client.
 // note: a Request is an http request. It is the request coming from the client.
-// note: our custom Pool struct can register/unregister a client, contains the map of clients, and broadcast method to send a message to all clients
+// note: our custom pool struct can register/unregister a client, contains the map of clients, and broadcast method to send a message to all clients
 func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 	fmt.Println("WebSocket Endpoint Hit")
 
@@ -24,7 +24,7 @@ func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 		Pool: pool,
 	}
 
-	// note: this is passing the client object to pool.Register channel
+	// note: this is passing the client object to pool.register channel
 	pool.Register <- client
 
 	// start waiting to receive messages from web client
