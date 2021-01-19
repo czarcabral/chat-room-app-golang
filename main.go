@@ -50,5 +50,5 @@ func main() {
 	setupRoutes()
 
 	// serve to localhost
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8081", nil)
 }
