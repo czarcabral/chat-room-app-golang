@@ -3,6 +3,7 @@ package websocket
 import (
 	"fmt"
 	"log"
+	"encoding/json"
 )
 
 // Client struct method: infinitely loops to wait to receive messages
@@ -22,20 +23,43 @@ func (c *Client) Read() {
 			return
 		}
 
-		// create HttpMessage object out of messageType and data
-		// note: add sender's id to message
-		body := ChatMessage{
-			Username: c.Username,
-			Message: string(p),
+		var chatOutgoingMessage ChatOutgoingMessage
+		json.Unmarshal(p, &chatOutgoingMessage)
+
+		if (chatOutgoingMessage.ChatEventType == Default) {
+			// create HttpMessage object out of messageType and data
+			// note: add sender's id to message
+			body := ChatMessage{
+				ClientId: c.Id,
+				Username: c.Username,
+				Message: chatOutgoingMessage.Value,
+			}
+			httpMessage := HttpMessage{
+				Body: body,
+			}
+			broadcastChannelValue := BroadcastChannelValue{
+				HttpMessage: httpMessage,
+				CurrentClient: *c,
+			}
+			c.Pool.Broadcast <- broadcastChannelValue
+			fmt.Printf("HttpMessage Received: %+v\n", httpMessage)
+		} else if (chatOutgoingMessage.ChatEventType == UsernameChange) {
+			// assign client's new username
+			oldUsername := c.Username
+			c.Username = chatOutgoingMessage.NewUsername
+
+			body := ChatMessage{
+				Message: fmt.Sprintf("%v changed username to %v", oldUsername, c.Username),
+			}
+			httpMessage := HttpMessage{
+				Body: body,
+			}
+			broadcastChannelValue := BroadcastChannelValue{
+				HttpMessage: httpMessage,
+				CurrentClient: *c,
+			}
+			c.Pool.Broadcast <- broadcastChannelValue
+			fmt.Printf("HttpMessage Received: %+v\n", httpMessage)
 		}
-		httpMessage := HttpMessage{
-			Body: body,
-		}
-		broadcastChannelValue := BroadcastChannelValue{
-			HttpMessage: httpMessage,
-			CurrentClient: *c,
-		}
-		c.Pool.Broadcast <- broadcastChannelValue
-		fmt.Printf("HttpMessage Received: %+v\n", httpMessage)
 	}
 }

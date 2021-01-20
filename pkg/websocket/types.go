@@ -29,6 +29,7 @@ type HttpMessage struct {
 
 // Our ChatMessage object
 type ChatMessage struct {
+	ClientId int `json:"clientId"`
 	Username string `json:"username"`
 	Message string `json:"message"`
 	IsOwner bool `json:"isOwner"`
@@ -39,14 +40,18 @@ type BroadcastChannelValue struct {
 	CurrentClient Client
 }
 
-// // ChatEventType enum for determining what event is happening in message
-// type ChatEventType int
-// const (
-// 	Registering ChatEventType = iota
-// 	Unregistering
-// 	UsernameChange
-// 	Default
-// )
+type ChatOutgoingMessage struct {
+	ChatEventType ChatEventType
+	Value string
+	NewUsername string
+}
+
+// ChatEventType enum for determining what event is happening in message
+type ChatEventType int
+const (
+	Default ChatEventType = iota
+	UsernameChange
+)
 // func (ce ChatEventType) String() string {
 // 	return [...]string{"Registering", "Unregistering", "UsernameChange", "Default"}[ce] // note: this syntax is creating array literal and then accessing element at index ce
 // }

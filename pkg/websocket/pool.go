@@ -61,18 +61,10 @@ func (pool *Pool) Start() {
 			currentClient := broadcastChannelValue.CurrentClient
 			httpMessage := broadcastChannelValue.HttpMessage
 			for client, _ := range pool.Clients {
-				if client.Id == currentClient.Id {
-					httpMessage.Body.IsOwner = true
-					if err := client.Conn.WriteJSON(httpMessage); err != nil { // send message to each client
-						fmt.Println(err)
-						return
-					}
-				} else {
-					httpMessage.Body.IsOwner = false
-					if err := client.Conn.WriteJSON(httpMessage); err != nil { // send message to each client
-						fmt.Println(err)
-						return
-					}
+				httpMessage.Body.IsOwner = client.Id == currentClient.Id
+				if err := client.Conn.WriteJSON(httpMessage); err != nil { // send message to each client
+					fmt.Println(err)
+					return
 				}
 			}
 		}
