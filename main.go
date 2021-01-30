@@ -57,5 +57,5 @@ func main() {
 	}
 
 	// serve to localhost
-	http.ListenAndServe(":8081", nil)
+	http.ListenAndServe(":"+port, nil)
 }

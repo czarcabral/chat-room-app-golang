@@ -39,6 +39,7 @@
     ```
 4. heroku app -> settings -> stack : change from 'heroku-20' needs to 'container'
     `heroku stack:set container --app chat-room-app-go`
+5. heroku app -> deploy -> automatic deployment
 
 5. Follow this tutorial [https://www.youtube.com/watch?v=4axmcEZTE7M&t=420s]
 
