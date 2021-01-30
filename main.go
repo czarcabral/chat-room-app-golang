@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"mygoproject/pkg/websocket"
+	"net/http"
+	"os"
 )
 
 // note: a ResponseWriter is an http response. When we write to it, we are sending response to client.
@@ -48,6 +49,12 @@ func setupRoutes() {
 func main() {
 	fmt.Println("Distributed Chat App v0.01")
 	setupRoutes()
+
+	// grab the port from heroku's environment variables else default to 5000
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "5000"
+	}
 
 	// serve to localhost
 	http.ListenAndServe(":8081", nil)

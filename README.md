@@ -34,10 +34,13 @@
       port = "5000"
     }
 
-    http.ListenAndServe(":"+port, r)
+    // serve to localhost
+    http.ListenAndServe(":8081", nil)
     ```
+4. heroku app -> settings -> stack : change from 'heroku-20' needs to 'container'
+    `heroku stack:set container --app chat-room-app-go`
 
-3. Follow this tutorial [https://www.youtube.com/watch?v=4axmcEZTE7M&t=420s]
+5. Follow this tutorial [https://www.youtube.com/watch?v=4axmcEZTE7M&t=420s]
 
 ### `To deploy Docker container to local machine`
 
